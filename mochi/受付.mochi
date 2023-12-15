@@ -1,0 +1,28 @@
+mixin "public_text_channel" (name) {
+  channel $name {
+    type = Text
+  }
+}
+
+server "受付" {
+  id = "1183047841497751653"
+
+  role "Administrator" {
+    color = #880000
+  }
+
+  category "Square" {
+public_text_channel("general")
+    public_text_channel("off_topic")
+
+    channel "talk" {
+      type = Voice
+    }
+  }
+
+  category "Dashboard" {
+    channel "overview" {
+      type = Text
+    }
+  }
+}

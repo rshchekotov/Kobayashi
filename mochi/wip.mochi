@@ -1,0 +1,27 @@
+category "General" {
+  channel "general" {
+    type -> Text
+    topic -> "This is a General and stuff..."
+  }
+  channel "test" {
+    type -> Text
+    topic -> "This is a Test Topic and stuff..."
+  }
+}
+
+category "Administration" {
+  channel "general" {
+    type -> Text
+    topic -> "Administration Chat"
+  }
+
+  channel "dev-announcements" {
+    type -> Text
+    topic -> "Announcements regarding APIs and Discord Dev News"
+  }
+
+  channel "conference" {
+    type -> Voice
+    topic -> "Voice Channel for Staff conferences."
+  }
+}

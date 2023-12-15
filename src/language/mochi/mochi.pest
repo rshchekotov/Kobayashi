@@ -1,0 +1,40 @@
+// i18n types
+CJK = @{ HAN | HIRAGANA | KATAKANA | HANGUL | BOPOMOFO }
+
+// Magic Rules
+WHITESPACE = _{ (" ") | ("\t") | NEWLINE }
+COMMENT = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" }
+
+// Basic Value Types
+discord_snowflake = { ASCII_DIGIT{,20} } // u64 -> len(2^64-1) <= 20
+identifier = { (ASCII_ALPHANUMERIC | CJK)+ }
+permissive_identifier = { () }
+
+quot = _{ "\"" }
+color = ${ "#" ~ ASCII_HEX_DIGIT{6} }
+string = ${ quot ~ (!"\"" ~ ANY)* ~ quot }
+quoted_identifier = ${ quot ~ identifier ~ quot }
+
+// Channel Types
+channel_type = { "Text" | "Voice" }
+
+// Channel Def.
+channel = {
+  "channel" ~ quoted_identifier ~ "{" ~
+    "type" ~ "->" ~ channel_type ~
+    "topic" ~ "->" ~ #topic = string ~
+  "}" 
+}
+
+// Category Def.
+category = {
+  "category" ~ quoted_identifier ~ "{" ~
+    channel* ~
+  "}"
+}
+
+file = _{
+  SOI ~
+    category* ~
+  EOI
+}
