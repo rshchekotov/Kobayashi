@@ -38,6 +38,7 @@ pub fn parse_channel(channel_wrapper: Pair<'_, Rule>) -> Channel {
     let mut channel = Channel {
         identifier,
         channel_type: ChannelType::Text,
+        private: None,
         topic: "".to_string(),
         nsfw: false
     };
@@ -49,6 +50,13 @@ pub fn parse_channel(channel_wrapper: Pair<'_, Rule>) -> Channel {
                 }
                 "nsfw" => {
                     channel.nsfw = record.as_str() == "true"
+                }
+                "private" => {
+                    let mut list = Vec::new();
+                    for private in record.into_inner() {
+                        list.push(private.into_inner().next().expect("Expected 'stid'.").as_str().to_string())
+                    }
+                    channel.private = Some(list)
                 }
                 _ => {
                     unreachable!("Found unimplemented tag: {}", tag)

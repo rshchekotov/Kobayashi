@@ -11,6 +11,10 @@ category "General" {
     type -> Text
     topic -> "Channel for Spicy Pics, whatever that may entail."
     nsfw -> true
+    private -> [
+      "@NSFW",
+      "HotChiliEnjoyer"
+    ]
   }
 }
 

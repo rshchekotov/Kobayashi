@@ -2,8 +2,11 @@
 CJK = @{ HAN | HIRAGANA | KATAKANA | HANGUL | BOPOMOFO }
 
 // Magic Rules
-WHITESPACE = _{ (" ") | ("\t") | NEWLINE }
-COMMENT = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" }
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
+COMMENT = _{ ("/*" ~ (!"*/" ~ ANY)* ~ "*/") | ("//" ~ (!NEWLINE ~ ANY)* ~ NEWLINE) }
+
+// Simple Stuff
+quot = _{ "\"" }
 
 // Operators
 assignment_op = _{ "->" }
@@ -12,33 +15,34 @@ assignment_op = _{ "->" }
 // Basic Value Types
 bool = ${ "true" | "false" }
 color = ${ "#" ~ ASCII_HEX_DIGIT{6} }
-discord_snowflake = { ASCII_DIGIT{,20} } // u64 -> len(2^64-1) <= 20
+discord_snowflake = { ASCII_DIGIT{,20} }     // u64 -> len(2^64-1) <= 20
 
-// AlphaNum+ Identifier
-anid = { (ASCII_ALPHANUMERIC | "-" | CJK)+ }
-// Permissive Identifier
-peid = { (!(" " | "\t" | "\"") ~ ANY)+ }
-// String Identifier
-stid = { (!"\"" ~ ANY)* }
-
-quot = _{ "\"" }
-// String
+anid = { (ASCII_ALPHANUMERIC | "-" | CJK)+ } // alpha-num. id.
+stid = ${ (!(quot | "\r" | "\n") ~ ANY)* }   // string id.
 string = ${ quot ~ stid ~ quot }
-// Quoted AlphaNum+ Identifier
-qanid = ${ quot ~ anid ~ quot }
-// Quoted Permissive Identifier
-qpeid = ${ quot ~ peid ~ quot }
+qanid = ${ quot ~ anid ~ quot }              // quoted alpha-num. id.
+string_array = {
+  ("[" ~ "]") |
+  ("[" ~ string ~ ("," ~ string)* ~ "]")
+}
 
 
 // Channel Types
 channel_type = { "Text" | "Voice" }
 
 // Channel Def.
+channel_required = _{
+  ("type" ~ assignment_op ~ channel_type) |
+  ("topic" ~ assignment_op ~ #topic = string)
+}
+channel_optional = _{
+  ("nsfw" ~ assignment_op ~ #nsfw = bool) |
+  ("private" ~ assignment_op ~ #private = string_array)
+}
 channel = {
   "channel" ~ qanid ~ "{" ~
-    "type" ~ assignment_op ~ channel_type ~
-    "topic" ~ assignment_op ~ #topic = string ~
-    ("nsfw" ~ assignment_op ~ #nsfw = bool)? ~
+    channel_required{2} ~
+    channel_optional* ~
   "}"
 }
 

@@ -18,14 +18,31 @@ pub fn demo_mochi() {
         Ok(data) => {
             let categories = parse_categories(data.clone());
             for category in categories {
-                println!("{}:", category.identifier);
+                println!("╭{}", category.identifier);
                 for channel in category.channels {
-                    println!("|> {} Channel '{}'{}: {}",
-                        if channel.nsfw { " [NSFW]" } else { "" },
+                    println!("├┬ {}{} Channel '{}'",
+                        if channel.nsfw { "[NSFW] " } else { "" },
                         channel.channel_type,
-                        channel.identifier,
-                        channel.topic);
+                        channel.identifier);
+                    if let Some(private_list) = channel.private {
+                        if private_list.is_empty() {
+                            println!("│╰── Topic: {}", channel.topic);
+                            continue;
+                        }
+
+                        let len = private_list.len();
+                        println!("│├── Topic: {}", channel.topic);
+                        if len > 1 {
+                            for i in 0..(len-1) {
+                                println!("│├── Accessible by: {}", private_list.get(i).unwrap());
+                            }
+                        }
+                        println!("│╰── Accessible by: {}", private_list.get(len - 1).unwrap());
+                    } else {
+                        println!("│╰── Topic: {}", channel.topic);
+                    }
                 }
+                println!("╰──────")
             }
         }
     }

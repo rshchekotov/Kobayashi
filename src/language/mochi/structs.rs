@@ -31,6 +31,7 @@ pub struct Channel {
     pub identifier: String,
     pub channel_type: ChannelType,
     pub topic: String,
+    pub private: Option<Vec<String>>,
     pub nsfw: bool
 }
 
