@@ -7,6 +7,11 @@ category "General" {
     type -> Text
     topic -> "This is a Test Topic and stuff..."
   }
+  channel "spicy-pics" {
+    type -> Text
+    topic -> "Channel for Spicy Pics, whatever that may entail."
+    nsfw -> true
+  }
 }
 
 category "Administration" {

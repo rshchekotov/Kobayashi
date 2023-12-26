@@ -5,30 +5,46 @@ CJK = @{ HAN | HIRAGANA | KATAKANA | HANGUL | BOPOMOFO }
 WHITESPACE = _{ (" ") | ("\t") | NEWLINE }
 COMMENT = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" }
 
+// Operators
+assignment_op = _{ "->" }
+
+
 // Basic Value Types
+bool = ${ "true" | "false" }
+color = ${ "#" ~ ASCII_HEX_DIGIT{6} }
 discord_snowflake = { ASCII_DIGIT{,20} } // u64 -> len(2^64-1) <= 20
-identifier = { (ASCII_ALPHANUMERIC | CJK)+ }
-permissive_identifier = { () }
+
+// AlphaNum+ Identifier
+anid = { (ASCII_ALPHANUMERIC | "-" | CJK)+ }
+// Permissive Identifier
+peid = { (!(" " | "\t" | "\"") ~ ANY)+ }
+// String Identifier
+stid = { (!"\"" ~ ANY)* }
 
 quot = _{ "\"" }
-color = ${ "#" ~ ASCII_HEX_DIGIT{6} }
-string = ${ quot ~ (!"\"" ~ ANY)* ~ quot }
-quoted_identifier = ${ quot ~ identifier ~ quot }
+// String
+string = ${ quot ~ stid ~ quot }
+// Quoted AlphaNum+ Identifier
+qanid = ${ quot ~ anid ~ quot }
+// Quoted Permissive Identifier
+qpeid = ${ quot ~ peid ~ quot }
+
 
 // Channel Types
 channel_type = { "Text" | "Voice" }
 
 // Channel Def.
 channel = {
-  "channel" ~ quoted_identifier ~ "{" ~
-    "type" ~ "->" ~ channel_type ~
-    "topic" ~ "->" ~ #topic = string ~
-  "}" 
+  "channel" ~ qanid ~ "{" ~
+    "type" ~ assignment_op ~ channel_type ~
+    "topic" ~ assignment_op ~ #topic = string ~
+    ("nsfw" ~ assignment_op ~ #nsfw = bool)? ~
+  "}"
 }
 
 // Category Def.
 category = {
-  "category" ~ quoted_identifier ~ "{" ~
+  "category" ~ string ~ "{" ~
     channel* ~
   "}"
 }

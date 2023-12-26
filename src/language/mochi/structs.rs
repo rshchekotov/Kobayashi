@@ -30,7 +30,8 @@ impl Display for ChannelType {
 pub struct Channel {
     pub identifier: String,
     pub channel_type: ChannelType,
-    pub topic: String
+    pub topic: String,
+    pub nsfw: bool
 }
 
 pub struct Category {

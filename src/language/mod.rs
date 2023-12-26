@@ -20,7 +20,11 @@ pub fn demo_mochi() {
             for category in categories {
                 println!("{}:", category.identifier);
                 for channel in category.channels {
-                    println!("|> {} Channel '{}': {}", channel.channel_type, channel.identifier, channel.topic);
+                    println!("|> {} Channel '{}'{}: {}",
+                        if channel.nsfw { " [NSFW]" } else { "" },
+                        channel.channel_type,
+                        channel.identifier,
+                        channel.topic);
                 }
             }
         }

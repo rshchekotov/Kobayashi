@@ -38,7 +38,8 @@ pub fn parse_channel(channel_wrapper: Pair<'_, Rule>) -> Channel {
     let mut channel = Channel {
         identifier,
         channel_type: ChannelType::Text,
-        topic: "".to_string()
+        topic: "".to_string(),
+        nsfw: false
     };
     for record in channel_data {
         if let Some(tag) = record.as_node_tag() {
@@ -46,9 +47,11 @@ pub fn parse_channel(channel_wrapper: Pair<'_, Rule>) -> Channel {
                 "topic" => {
                     channel.topic = record.as_str().to_string();
                 }
+                "nsfw" => {
+                    channel.nsfw = record.as_str() == "true"
+                }
                 _ => {
-                    println!("Found unimplemented tag: {}", tag);
-                    unreachable!()
+                    unreachable!("Found unimplemented tag: {}", tag)
                 }
             }
             continue;
@@ -58,8 +61,7 @@ pub fn parse_channel(channel_wrapper: Pair<'_, Rule>) -> Channel {
                 channel.channel_type = ChannelType::from_str(record.as_str()).expect("Invalid Channel Type.");
             }
             _ => {
-                println!("Encountered: {:?}", record.as_rule());
-                unreachable!()
+                unreachable!("Encountered: {:?}", record.as_rule())
             }
         }
     }
