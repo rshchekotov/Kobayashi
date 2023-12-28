@@ -7,7 +7,7 @@ use mochi::Rule;
 use mochi::data::*;
 
 pub fn demo_mochi() {
-    let input_data = fs::read("mochi/wip.mochi");
+    let input_data = fs::read("mochi/simple.mochi");
     let buffer = input_data.expect("Could not read file.");
     let decoded_str = String::from_utf8(buffer).expect("Could not decode file data to UTF-8.");
 

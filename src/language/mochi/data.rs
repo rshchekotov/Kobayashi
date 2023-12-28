@@ -43,35 +43,7 @@ pub fn parse_channel(channel_wrapper: Pair<'_, Rule>) -> Channel {
         nsfw: false
     };
     for record in channel_data {
-        if let Some(tag) = record.as_node_tag() {
-            match tag {
-                "topic" => {
-                    channel.topic = record.as_str().to_string();
-                }
-                "nsfw" => {
-                    channel.nsfw = record.as_str() == "true"
-                }
-                "private" => {
-                    let mut list = Vec::new();
-                    for private in record.into_inner() {
-                        list.push(private.into_inner().next().expect("Expected 'stid'.").as_str().to_string())
-                    }
-                    channel.private = Some(list)
-                }
-                _ => {
-                    unreachable!("Found unimplemented tag: {}", tag)
-                }
-            }
-            continue;
-        }
-        match record.as_rule() {
-            Rule::channel_type => {
-                channel.channel_type = ChannelType::from_str(record.as_str()).expect("Invalid Channel Type.");
-            }
-            _ => {
-                unreachable!("Encountered: {:?}", record.as_rule())
-            }
-        }
+        println!("Node: {:?}", record);
     }
     channel
 }

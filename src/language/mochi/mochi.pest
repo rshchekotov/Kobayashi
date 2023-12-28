@@ -11,38 +11,39 @@ quot = _{ "\"" }
 // Operators
 assignment_op = _{ "->" }
 
-
 // Basic Value Types
-bool = ${ "true" | "false" }
+bool = { "true" | "false" }
 color = ${ "#" ~ ASCII_HEX_DIGIT{6} }
 discord_snowflake = { ASCII_DIGIT{,20} }     // u64 -> len(2^64-1) <= 20
 
-anid = { (ASCII_ALPHANUMERIC | "-" | CJK)+ } // alpha-num. id.
-stid = ${ (!(quot | "\r" | "\n") ~ ANY)* }   // string id.
-string = ${ quot ~ stid ~ quot }
-qanid = ${ quot ~ anid ~ quot }              // quoted alpha-num. id.
-string_array = {
-  ("[" ~ "]") |
-  ("[" ~ string ~ ("," ~ string)* ~ "]")
-}
-
-
-// Channel Types
+// Discord Specific Enums
 channel_type = { "Text" | "Voice" }
 
+// Different String Types
+string = ${ "\"" ~ inner ~ "\"" }
+inner = @{ char* }
+char = {
+  !("\"" | "\\") ~ ANY
+  | "\\" ~ ("\"" | "\\" | "/" | "b" | "f" | "n" | "r" | "t")
+  | "\\" ~ ("u" ~ ASCII_HEX_DIGIT{4})
+}
+
+// Array
+array = {
+  "[" ~ "]" |
+  "[" ~ value ~ ("," ~ value)* ~ "]"
+}
+
+// Values
+value = _{ array | bool | channel_type | string }
+
+// property = { anid ~ assignment_op ~ value }
+property = { inner ~ assignment_op ~ value }
+
 // Channel Def.
-channel_required = _{
-  ("type" ~ assignment_op ~ channel_type) |
-  ("topic" ~ assignment_op ~ #topic = string)
-}
-channel_optional = _{
-  ("nsfw" ~ assignment_op ~ #nsfw = bool) |
-  ("private" ~ assignment_op ~ #private = string_array)
-}
 channel = {
-  "channel" ~ qanid ~ "{" ~
-    channel_required{2} ~
-    channel_optional* ~
+  "channel" ~ string ~ "{" ~
+    property+ ~
   "}"
 }
 

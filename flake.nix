@@ -22,15 +22,19 @@
           overlays = [ (import rust-overlay) ];
           pkgs = import nixpkgs { inherit system overlays; };
           inherit (pkgs) lib;
+
           rustToolchain = pkgs.pkgsBuildHost.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
           craneLib = (crane.mkLib pkgs).overrideToolchain rustToolchain;
+
           src = lib.cleanSourceWith {
             src = ./.;
             filter = path: type: (lib.hasSuffix "\.pest" path) ||
               (craneLib.filterCargoSources path type);
           };
+
           nativeBuildInputs = with pkgs; [ rustToolchain rust-analyzer pkg-config ];
           buildInputs = with pkgs; [];
+
           commonArgs = { inherit src buildInputs nativeBuildInputs; };
           cargoArtifacts = craneLib.buildDepsOnly commonArgs;
           bin = craneLib.buildPackage (commonArgs // {

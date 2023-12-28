@@ -9,3 +9,8 @@ pest = "2.7.5"
 pest_derive = { version = "2.7.5", features = ["std", "grammar-extras"] }
 poise = "0.5.7"
 tokio = { version = "1.35.0", features = ["rt-multi-thread"] }
+
+[workspace]
+members = [
+  "lib/mochi"
+]
