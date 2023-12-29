@@ -1,17 +1,19 @@
-use crate::{Error, Data};
+use crate::{Data, Error};
 
-use poise::serenity_prelude::{self as serenity};
 use poise::event::Event;
+use poise::serenity_prelude::{self as serenity};
 
 pub async fn event_handler(
     ctx: &serenity::Context,
     event: &Event<'_>,
     _framework: poise::FrameworkContext<'_, Data, Error>,
-    data: &Data
+    data: &Data,
 ) -> Result<(), Error> {
     match event {
         // https://docs.rs/poise/latest/src/poise/event.rs.html#94-196
-        Event::Ready { data_about_bot: ready } => {
+        Event::Ready {
+            data_about_bot: ready,
+        } => {
             println!("Logged in as {}", ready.user.name);
             if let Ok(info) = ctx.http.get_current_application_info().await {
                 let mut owner = data.bot_owner.lock().await;
@@ -19,7 +21,14 @@ pub async fn event_handler(
                 let dm_chan = info.owner.create_dm_channel(ctx).await;
                 match dm_chan {
                     Ok(chan) => {
-                        let msg = chan.send_message(ctx, |m| m.content(format!("Connected & ready to serve, {}.", info.owner.name))).await;
+                        let msg = chan
+                            .send_message(ctx, |m| {
+                                m.content(format!(
+                                    "Connected & ready to serve, {}.",
+                                    info.owner.name
+                                ))
+                            })
+                            .await;
                         if let Err(e) = msg {
                             println!("Failed to send DM to bot owner: {}", e);
                         }
@@ -32,7 +41,9 @@ pub async fn event_handler(
                 println!("Failed to retrieve owner.")
             }
         }
-        Event::Message { new_message: message } => {
+        Event::Message {
+            new_message: message,
+        } => {
             if message.content.to_lowercase().contains("Kobayashi") {
                 message.reply(ctx, "You mentioned me?".to_string()).await?;
             }

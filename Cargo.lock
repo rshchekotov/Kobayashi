@@ -614,6 +614,7 @@ name = "kobayashi"
 version = "0.0.1"
 dependencies = [
  "dotenv",
+ "mochi",
  "pest",
  "pest_derive",
  "poise",
@@ -687,6 +688,10 @@ dependencies = [
 [[package]]
 name = "mochi"
 version = "0.1.0"
+dependencies = [
+ "pest",
+ "pest_derive",
+]
 
 [[package]]
 name = "num-traits"

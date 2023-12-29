@@ -1,0 +1,52 @@
+/* 
+ * Refresher on the inner workings of Pest: 
+ *  - `_` means 'silent'-rule, it won't appear in the parse result
+ *  - `@` means 'atomic'-rule, it will be parsed as a single token and no
+ *        intermediate rules will be applied, interior rules are silent
+ *  - `$` means 'compound atomic'-rule, it will produce inner tokens
+ */
+
+/* Magic Rules */
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
+COMMENT = _{ ("/*" ~ (!"*/" ~ ANY)* ~ "*/") | ("//" ~ (!NEWLINE ~ ANY)* ~ NEWLINE) }
+
+/* Operators */
+assignment_op = _{ "->" }
+
+/* Text Types */
+char = {
+    !("\"" | "\\") ~ ANY
+    | "\\" ~ ("\"" | "\\" | "/" | "b" | "f" | "n" | "r" | "t")
+    | "\\" ~ ("u" ~ ASCII_HEX_DIGIT{4})
+}
+text = @{ char* }
+identifier = @{ ASCII_ALPHA ~ (ASCII_ALPHA | ASCII_DIGIT | "_")* }
+string = ${ "\"" ~ text ~ "\"" }
+
+/* Other Types */
+bool = { "true" | "false" }
+
+array = {
+    "[" ~ "]" |
+    "[" ~ value ~ ("," ~ value)* ~ "]"
+}
+
+color = @{ "#" ~ ASCII_HEX_DIGIT{1,6} }
+
+integer = @{ ASCII_DIGIT+ }
+
+// ! Remember to add more generic types to the back (i.e. identifier)
+value = _{ array | bool | string | color | integer | identifier }
+
+/* Environments */
+env_type = { "role" | "category" | "channel" }
+
+environment = {
+    env_type ~ string ~ "{" ~ (property | environment)* ~ "}"
+}
+
+/* Rules */
+property = { identifier ~ assignment_op ~ value }
+
+/* File (represents a valid file in Mochi) */
+file = _{ SOI ~ property* ~ EOI }

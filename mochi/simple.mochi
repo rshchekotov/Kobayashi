@@ -1,6 +1,0 @@
-category "General" {
-  channel "general" {
-    type -> Voice
-    topic -> "Voice Channel for Talks."
-  }
-}

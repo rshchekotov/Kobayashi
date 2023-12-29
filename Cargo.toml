@@ -10,6 +10,9 @@ pest_derive = { version = "2.7.5", features = ["std", "grammar-extras"] }
 poise = "0.5.7"
 tokio = { version = "1.35.0", features = ["rt-multi-thread"] }
 
+[dependencies.mochi]
+path = "lib/mochi"
+
 [workspace]
 members = [
   "lib/mochi"
