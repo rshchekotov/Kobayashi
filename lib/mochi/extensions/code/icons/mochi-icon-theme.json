@@ -1,0 +1,10 @@
+{
+    "iconDefinitions": {
+        "mochi": {
+            "iconPath": "./images/mochi.svg"
+        }
+    },
+    "languageIds": {
+        "mochi": "mochi"
+    }
+}

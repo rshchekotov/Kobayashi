@@ -20,6 +20,11 @@
       "language": "mochi",
       "scopeName": "source.mochi",
       "path": "./syntaxes/mochi.tmLanguage.json"
+    }],
+    "iconThemes": [{
+      "id": "mochi-icon-theme",
+      "label": "Mochi Icon Theme",
+      "path": "./icons/mochi-icon-theme.json"
     }]
   }
 }

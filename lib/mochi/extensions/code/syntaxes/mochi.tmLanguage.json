@@ -1,31 +1,94 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
 	"name": "Mochi",
+	"fileTypes": ["mochi"],
+	"foldingStartMarker": "[\\{\\[]\\s*$",
+	"foldingStopMarker": "^\\s*[\\}\\]]",
 	"patterns": [
-		{
-			"include": "#keywords"
-		},
-		{
-			"include": "#strings"
-		}
+		{ "include": "#line_comments" },
+		{ "include": "#comments" },
+
+		{ "include": "#environments" },
+		{ "include": "#arrays" },
+		{ "include": "#identifiers" },
+		{ "include": "#property_key" },
+		{ "include": "#value" }
 	],
 	"repository": {
-		"keywords": {
-			"patterns": [{
-				"name": "keyword.control.mochi",
-				"match": "\\b(if|while|for|return)\\b"
-			}]
+		"line_comments": {
+			"name": "comment.line.mochi",
+			"match": "//.*$"
+		},
+		"comments": {
+			"name": "comment.block.mochi",
+			"begin": "/\\*",
+			"end": "\\*/"
+		},
+		"environments": {
+			"name": "meta.environment.mochi",
+			"begin": "\\s*(\\w+)\\s*\"([^\"]+)\"\\s*\\{",
+			"end": "\\}",
+			"captures": {
+				"1": { "name": "storage.type.environment_type.mochi" },
+				"2": { "name": "entity.name.type.environment_name.mochi" }
+			},
+			"patterns": [
+				{ "include": "$self" },
+				{ "include": "#line_comments" },
+				{ "include": "#comments" },
+				{ "include": "#assignment_op" },
+				{ "include": "#property_key" },
+				{ "include": "#value" },
+				{ "include": "#arrays" }
+			]
+		},
+		"property_key": {
+			"match": "\\s*(\\w+)\\s*(->)",
+			"captures": {
+				"1": { "name": "entity.other.attribute-name.mochi" },
+				"2": { "name": "keyword.operator.assignment.mochi" }
+			}
+		},
+		"value": {
+			"name": "meta.value.mochi",
+			"patterns": [
+				{ "include": "#booleans" },
+				{ "include": "#strings" },
+				{ "include": "#colors" },
+				{ "include": "#integers" },
+				{ "include": "#identifiers" }
+			]
+		},
+		"arrays": {
+			"name": "meta.array.mochi",
+			"begin": "\\[",
+			"end": "\\]",
+			"patterns": [ { "include": "#value" } ]
+		},
+		"booleans": {
+			"name": "constant.language.boolean.mochi",
+			"match": "\\b(true|false)\\b"
 		},
 		"strings": {
 			"name": "string.quoted.double.mochi",
 			"begin": "\"",
 			"end": "\"",
-			"patterns": [
-				{
-					"name": "constant.character.escape.mochi",
-					"match": "\\\\."
-				}
-			]
+			"patterns": [{
+				"name": "constant.character.escape.mochi",
+				"match": "\\\\."
+			}]
+		},
+		"colors": {
+			"name": "constant.language.color.mochi",
+			"match": "\\b#\\d{1,6}\\b"
+		},
+		"integers": {
+			"name": "constant.numeric.integer.mochi",
+			"match": "\\b\\d+\\b"
+		},
+		"identifiers": {
+			"name": "constant.language.identifier.mochi",
+			"match": "\\b\\w+\\b"
 		}
 	},
 	"scopeName": "source.mochi"
