@@ -1,0 +1,25 @@
+{
+  "name": "mochi-code",
+  "displayName": "mochi-code",
+  "description": "Support for the Mochi Language for VS Code",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "mochi",
+      "aliases": ["Mochi", "mochi"],
+      "extensions": [".mochi"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "mochi",
+      "scopeName": "source.mochi",
+      "path": "./syntaxes/mochi.tmLanguage.json"
+    }]
+  }
+}

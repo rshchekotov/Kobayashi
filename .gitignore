@@ -1,4 +1,8 @@
+# NixOS
 .env*
 .direnv
 target
 result
+
+# IDE
+.idea

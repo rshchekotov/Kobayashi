@@ -1,0 +1,20 @@
+{
+    parserClass="edu.shch.mochi.plugin.parser.MochiParser"
+    extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+    psiClassPrefix="Mochi"
+    psiImplClassSuffix="Impl"
+    psiPackage="edu.shch.mochi.plugin.psi"
+    psiImplPackage="edu.shch.mochi.plugin.psi.impl"
+    elementTypeHolderClass="edu.shch.mochi.plugin.psi.MochiTypes"
+    elementTypeClass="edu.shch.mochi.plugin.psi.MochiElementType"
+    tokenTypeClass="edu.shch.mochi.plugin.psi.MochiTokenType"
+    psiImplUtilClass="edu.shch.mochi.plugin.psi.MochiPsiImplUtil"
+
+    // Pest Grammar Example: https://github.com/pest-parser/intellij-pest/blob/master/grammar/pest.bnf
+}
+
+simpleFile ::= (environment | property | COMMENT)*
+environment_type ::= identifier
+environment ::= (environment_type STRING LBRACE (property | environment | COMMENT)* RBRACE)
+value ::= (BOOLEAN | COLOR | INTEGER | STRING | ENUM_VALUE) | (LBRACKET (value (ARRAY_SEP value)*)? RBRACKET)
+property ::= (IDENTIFIER ASSIGNMENT_OP value) { methods=[getKey] }
